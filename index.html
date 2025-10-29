@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoxChat - Gelişmiş Sesli Sohbet</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Particles Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Giriş Modal'ı -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-rocket"></i> VoxChat'e Hoşgeldin</h2>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="usernameInput">
+                        <i class="fas fa-user"></i> 
+                        Kullanıcı Adın
+                    </label>
+                    <input type="text" id="usernameInput" placeholder="Havalı bir isim seç..." maxlength="20" autocomplete="off">
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <i class="fas fa-palette"></i> 
+                        Avatar Seç
+                    </label>
+                    <div class="avatar-grid">
+                        <div class="avatar-option selected" data-avatar="1">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="2">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <i class="fas fa-cat"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="3">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="4">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="5">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="6">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="7">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="8">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="9">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="10">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="11">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-option" data-avatar="12">
+                            <div class="avatar-circle" style="background: linear-gradient(135deg, #55a3ff 0%, #003d82 100%);">
+                                <i class="fas fa-dragon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="enterChatBtn" class="btn btn-primary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> 
+                    Sohbete Gir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ana Uygulama -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <!-- Sol Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>
+                    <i class="fas fa-satellite-dish"></i> 
+                    VoxChat
+                </h2>
+                <div class="connection-status" id="status">
+                    <i class="fas fa-circle"></i>
+                    <span>Bağlanıyor...</span>
+                </div>
+            </div>
+            
+            <!-- Kullanıcı Profili -->
+            <div class="user-profile" id="userProfile">
+                <div class="user-avatar" id="currentUserAvatar">
+                    <div class="avatar-circle">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="username" id="currentUsername">Kullanıcı</div>
+                    <div class="user-status">Çevrimiçi</div>
+                </div>
+            </div>
+            
+            <!-- Ses Kontrolleri -->
+            <div class="voice-controls">
+                <button id="joinBtn" class="control-btn join-btn">
+                    <i class="fas fa-headphones"></i>
+                    <span>Sesli Kanala Katıl</span>
+                </button>
+                <button id="leaveBtn" class="control-btn leave-btn" disabled>
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Kanaldan Ayrıl</span>
+                </button>
+                
+                <div class="quick-controls">
+                    <button id="muteBtn" class="quick-control-btn" disabled title="Mikrofon Kontrol">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="deafenBtn" class="quick-control-btn" disabled title="Ses Kontrol">
+                        <i class="fas fa-headphones"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Ayarlar -->
+            <div class="settings-section">
+                <button class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                    <span>Ayarlar</span>
+                </button>
+            </div>
+            
+            <!-- Ses Seviyesi -->
+            <div class="volume-section">
+                <div class="volume-header">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Ana Ses Seviyesi</span>
+                </div>
+                <div class="volume-control">
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                    <span id="volumeValue">70%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ana İçerik -->
+        <div class="main-content">
+            <!-- Tab Navigation -->
+            <div class="content-tabs">
+                <button class="tab-btn active" data-tab="voice">
+                    <i class="fas fa-microphone"></i>
+                    <span>Sesli Kanal</span>
+                </button>
+                <button class="tab-btn" data-tab="chat">
+                    <i class="fas fa-comments"></i>
+                    <span>Metin Chat</span>
+                </button>
+            </div>
+
+            <!-- Voice Channel Content -->
+            <div class="tab-content active" id="voice-tab">
+                <div class="voice-channel">
+                    <div class="channel-header">
+                        <div>
+                            <h3>
+                                <i class="fas fa-volume-up"></i>
+                                Genel Sesli Kanal
+                            </h3>
+                        </div>
+                        <div class="channel-stats">
+                            <i class="fas fa-users"></i>
+                            <span id="userCount">0 kullanıcı aktif</span>
+                        </div>
+                    </div>
+                    
+                    <div class="voice-users" id="voiceUsers">
+                        <div class="empty-channel">
+                            <i class="fas fa-user-friends"></i>
+                            <p>Kanal boş... İlk sen katıl!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Content -->
+            <div class="tab-content" id="chat-tab">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div>
+                            <h3>
+                                <i class="fas fa-comments"></i>
+                                Genel Chat
+                            </h3>
+                        </div>
+                        <div class="chat-stats">
+                            <i class="fas fa-message"></i>
+                            <span id="messageCount">0 mesaj</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="empty-chat">
+                            <i class="fas fa-comment-dots"></i>
+                            <p>Henüz kimse mesaj yazmamış...</p>
+                            <small>İlk mesajı sen yaz!</small>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <input type="text"
+                                   id="chatInput"
+                                   placeholder="Mesajınızı yazın..."
+                                   maxlength="500"
+                                   disabled>
+                            <button id="sendBtn" class="send-btn" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="chat-features">
+                            <button class="feature-btn" id="emojiBtn" disabled>
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button class="feature-btn" id="attachBtn" disabled>
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <div class="typing-indicator" id="typingIndicator">
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ayarlar Modal -->
+    <div id="settingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Ayarlar</h2>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>
+                        <i class="fas fa-microphone"></i>
+                        Mikrofon Hassasiyeti
+                    </label>
+                    <div class="volume-control">
+                        <input type="range" id="micSensitivity" min="0" max="100" value="50">
+                        <span id="micValue">50%</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <i class="fas fa-eye"></i>
+                        Görsel Efektler
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="particlesToggle">
+                            <i class="fas fa-sparkles"></i>
+                            Partikülleri Aç/Kapat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <i class="fas fa-info-circle"></i>
+                        Bilgi
+                    </label>
+                    <div style="padding: 15px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.3);">
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 14px;">
+                            VoxChat v1.0 - WebRTC tabanlı sesli sohbet uygulaması
+                        </p>
+                    </div>
+                </div>
+                
+                <button id="closeSettingsBtn" class="btn btn-primary btn-large">
+                    <i class="fas fa-times"></i>
+                    Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Uzak kullanıcıların sesleri için audio elementleri -->
+    <div id="remoteAudios"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
